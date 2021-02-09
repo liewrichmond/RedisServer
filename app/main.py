@@ -6,7 +6,8 @@ def main():
     s = socket.create_server(("localhost", 6379), reuse_port=True)
     connection, addr= s.accept() # wait for client
 
-    connection.recv(4096)
+    data = connection.recv(4096)
+    print(data)
 
 
 
