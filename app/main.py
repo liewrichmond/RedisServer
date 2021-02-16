@@ -1,6 +1,6 @@
 import socket
-from parser import Parser
-from encoder import Encoder
+from .parser import Parser
+from .encoder import Encoder
 
 def ping(arg):
     encoder = Encoder()
