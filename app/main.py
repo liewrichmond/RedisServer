@@ -15,8 +15,10 @@ def main():
     s = socket.create_server(('localhost', 6379), reuse_port=True)
     connection, addr= s.accept() # wait for client
     while True:
+        connection.settimeout(5)
         data = connection.recv(1024)
         if data == b'':
+            print(1)
             continue
         parser = Parser()
         cmdArray = parser.parseArray(data)
