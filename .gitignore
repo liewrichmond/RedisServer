@@ -1,4 +1,5 @@
 */__*
+!app/__init__.py
 scripts/
 tests/
 respParser.py
