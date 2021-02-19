@@ -11,21 +11,6 @@ def ping(arg):
         data = encoder.encodeSimpleString(arg)
     return data
 
-async def listenForCommands(connection):
-    print("listening for commands")
-    connection.settimeout(20)
-    parser = Parser()
-    while True:
-        data = connection.recv(1024)
-
-        if data == b'':
-            continue
-
-        cmdArray = parser.parseArray(data)
-        cmds = parser.parseCommands(cmdArray)
-        pingOutput = ping(cmds[0][1])
-        connection.sendall(pingOutput)
-
 class RedisServer():
     def __init__(self):
         self.connections = []
