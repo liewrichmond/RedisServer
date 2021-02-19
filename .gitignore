@@ -2,3 +2,4 @@
 !app/__init__.py
 scripts/
 tests/
+playground.py
