@@ -49,7 +49,6 @@ class RedisServer():
                 data = connection.recv(1024)
                 if data == b'':
                     continue
-                print(data)
                 cmdArray = self.parser.parseArray(data)
                 cmds = self.parser.parseCommands(cmdArray)
                 output = ping(cmds[0][1])
