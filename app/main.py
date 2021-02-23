@@ -13,6 +13,10 @@ def ping(arg):
         data = encoder.encodeSimpleString(arg)
     return data
 
+def echo(arg):
+    data = encoder.encodeSimpleString(arg)
+    return data
+
 class RedisServer():
     def __init__(self):
         self.listenSocket = None
@@ -24,7 +28,7 @@ class RedisServer():
          self.listenSocket = socket.create_server(('localhost', 6379), reuse_port = True, backlog = 10)
          self.listenSocket.setblocking(False)
 
-    async def serve(self):
+    def serve(self):
         if(self.listenSocket is None):
             raise ValueError("Server hasn't been started yet!")
 
@@ -42,16 +46,17 @@ class RedisServer():
             self.read(readable)
             self.write(writeable)
 
-
     def read(self, readables):
         for connection in readables:
             if connection is not self.listenSocket:
                 data = connection.recv(1024)
                 if data == b'':
                     continue
-                cmdArray = self.parser.parseArray(data)
-                cmds = self.parser.parseCommands(cmdArray)
-                output = ping(cmds[0][1])
+
+                commands = self.parser.decode(data)
+                command = self.parser.parseCommands(commands)
+
+                output = command.encode()
 
                 if(connection not in self.messageQueue):
                     self.messageQueue[connection] = queue.Queue()
@@ -65,38 +70,11 @@ class RedisServer():
                     message = self.messageQueue[connection].get_nowait()
                     connection.sendall(message)
 
-    async def listenForClient(self):
-        print("listening for client")
-        s = socket.create_server(('localhost', 6379), reuse_port = True)
-        connection, addr = s.accept()
-        connection.setblocking(False)
-        return connection
-
-    async def listenForCommands(self, connection):
-        print("listeningForCommands")
-        connection.settimeout(20)
-        parser = Parser()
-        while True:
-            data = connection.recv(1024)
-
-            if data == b'':
-                await asyncio.sleep(0.1)
-                continue
-            print("got message")
-            cmdArray = parser.parseArray(data)
-            cmds = parser.parseCommands(cmdArray)
-            pingOutput = ping(cmds[0][1])
-            connection.sendall(pingOutput)
-
-    async def acceptNewClient(self):
-        connection = await self.listenForClient()
-        asyncio.create_task(self.listenForCommands(connection))
-
 async def main():
     print("Starting Server...")
     server = RedisServer()
     server.start()
-    asyncio.create_task(server.serve())
+    server.serve()
 
 if __name__ == "__main__":
     loop = asyncio.get_event_loop()

@@ -1,6 +1,7 @@
 
 class Encoder():
-    def getLengthInStr(self, length):
+    @classmethod
+    def getLengthInStr(cls, length):
         temp = []
         while length >= 1:
             temp.append(length % 10)
@@ -11,11 +12,13 @@ class Encoder():
             res += chr(num + ord('0'))
         return res
 
-    def encodeBulkString(self, string):
-        length = self.getLengthInStr(len(string))
+    @classmethod
+    def encodeBulkString(cls, string):
+        length = cls.getLengthInStr(len(string))
         strOutput = "$" + length + "\r\n" + string + "\r\n"
         return strOutput.encode('utf-8')
 
-    def encodeSimpleString(self, string):
+    @classmethod
+    def encodeSimpleString(cls, string):
         strOutput = "+" + string + "\r\n"
         return strOutput.encode('utf-8')
