@@ -1,6 +1,6 @@
 from collections import namedtuple
 from .resps import CRLFS, RespArray, RespBulkString
-from .commands import Command, Echo, Ping
+from .commands import Command, Echo, Ping, Set, Get
 
 class Parser():
     def getLengthFromStr(self, asciiStr):
