@@ -14,8 +14,14 @@ class Encoder():
 
     @classmethod
     def encodeBulkString(cls, string):
-        length = cls.getLengthInStr(len(string))
-        strOutput = "$" + length + "\r\n" + string + "\r\n"
+        strOutput = None
+
+        if string == "":
+            strOutput = "$-1\r\n"
+        else:
+            length = cls.getLengthInStr(len(string))
+            strOutput = "$" + length + "\r\n" + string + "\r\n"
+
         return strOutput.encode('utf-8')
 
     @classmethod

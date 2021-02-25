@@ -5,24 +5,13 @@ import queue
 from .parser import Parser
 from .encoder import Encoder
 
-def ping(arg):
-    encoder = Encoder()
-    if arg == '':
-        data = encoder.encodeSimpleString("PONG")
-    else:
-        data = encoder.encodeSimpleString(arg)
-    return data
-
-def echo(arg):
-    data = encoder.encodeSimpleString(arg)
-    return data
-
 class RedisServer():
     def __init__(self):
         self.listenSocket = None
         self.parser = Parser()
         self.connections = []
         self.messageQueue = {}
+        self.storage = {}
 
     def start(self):
          self.listenSocket = socket.create_server(('localhost', 6379), reuse_port = True, backlog = 10)
@@ -56,7 +45,7 @@ class RedisServer():
                 commands = self.parser.decode(data)
                 command = self.parser.parseCommands(commands)
 
-                output = command.encode()
+                output = command.encode(self.storage)
 
                 if(connection not in self.messageQueue):
                     self.messageQueue[connection] = queue.Queue()

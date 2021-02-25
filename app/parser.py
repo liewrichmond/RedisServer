@@ -1,6 +1,7 @@
 from collections import namedtuple
 from .resps import CRLFS, RespArray, RespBulkString
 from .commands import Command, Echo, Ping
+
 class Parser():
     def getLengthFromStr(self, asciiStr):
         length = 0
@@ -65,7 +66,7 @@ class Parser():
         # Assumes that array is either length 1 or 2 - has argument or does not have argument
         command = None
         if len(array) < 2:
-            if(array[0] == Command.ECHO):
+            if(array[0] != Command.PING):
                 raise ValueError("Invalid number of arguments for ECHO commands")
             else:
                 command = Ping('')
@@ -74,6 +75,11 @@ class Parser():
                 command = Ping(array[1])
             elif (array[0] == Command.ECHO):
                 command = Echo(array[1])
+            elif (array[0] == Command.GET):
+                command = Get(array[1])
+            elif (array[0] == Command.SET):
+                if(len(array) == 3):
+                    command = Set(array[1], array[2])
             else:
                 raise ValueError("Haven't implemented command")
 
