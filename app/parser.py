@@ -20,6 +20,8 @@ class Parser():
             return self.decodeArray(data)
         elif respType == "$":
             return self.decodeBulkString(data)
+        elif respType == ":":
+            return self.decodeInteger(data)
         else:
             raise TypeError("Haven't implemented decoding that type")
 
@@ -28,6 +30,10 @@ class Parser():
         length = self.getLengthFromStr(asString[0][1:])
         payload = asString[-2]
         return payload
+
+    def decodeInteger(self, data):
+        asString = data.decode()
+        return self.getLengthFromStr(asString[1:-2])
 
     def decodeArray(self, data):
         elements = []
@@ -78,8 +84,12 @@ class Parser():
             elif (array[0] == Command.GET):
                 command = Get(array[1])
             elif (array[0] == Command.SET):
-                if(len(array) == 3):
-                    command = Set(array[1], array[2])
+                args = {}
+                for i in range(3, len(array), 2):
+                    args[array[i]] = array[i+1]
+
+                command = Set(array[1], array[2], args)
+
             else:
                 raise ValueError("Haven't implemented command")
 

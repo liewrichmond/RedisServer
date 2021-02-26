@@ -48,5 +48,18 @@ class RespBulkString():
         else:
             return False
 
+class RespInteger():
+    def __init__(self, payload):
+        self.payload = payload
+
+    def __str__(self):
+        return str(self.payload)
+
+    def __eq__(self, other):
+        if self.payload == other.payload:
+            return True
+        else:
+            return False
+
 
 
