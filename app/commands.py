@@ -39,6 +39,12 @@ class Echo(Command):
         return Encoder.encodeBulkString(self.payload)
 
 class Set(Command):
+    def numberAsInt(self, string):
+        length = 0
+        for char in asciiStr:
+            length = (length * 10 ) + (ord(char) - ord('0'))
+        return length
+
     def __init__(self, key, value, args = {}):
         self.key = key
         self.value = value

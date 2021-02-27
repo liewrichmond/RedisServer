@@ -4,6 +4,8 @@ from .commands import Command, Echo, Ping, Set, Get
 
 class Parser():
     def getLengthFromStr(self, asciiStr):
+        if type(asciiStr) is int:
+            return asciiStr
         length = 0
         for char in asciiStr:
             length = (length * 10 ) + (ord(char) - ord('0'))
@@ -86,7 +88,7 @@ class Parser():
             elif (array[0] == Command.SET):
                 args = {}
                 for i in range(3, len(array), 2):
-                    args[array[i]] = array[i+1]
+                    args[array[i]] = self.getLengthFromStr(array[i+1])
 
                 command = Set(array[1], array[2], args)
 
